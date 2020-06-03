@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 
 const getShowResults = show => {
-  getImdbResults(getImdbSearchPage(show));
+  return getImdbResults(getImdbSearchPage(show));
 };
 
 // Converts a string to a friendly query
