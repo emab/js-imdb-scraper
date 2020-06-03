@@ -2,7 +2,7 @@
   "name": "js-imdb-scraper",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "imdbScraper.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "node-fetch": "^2.6.0"
