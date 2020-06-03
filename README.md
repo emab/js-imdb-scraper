@@ -15,3 +15,13 @@ Example of the return format (search string was "The office"):
   }
 ]
 ```
+
+## Usage
+
+Initially returns a `Promise`. Use `then()` to wait for the asynchronous function to finish.
+
+```
+const imdbs = require("js-imdb-scraper");
+
+imdbs("the office").then((result) => console.log(result));
+```
