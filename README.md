@@ -41,7 +41,7 @@ const imdb = require("js-imdb-scraper");
 
 const example = async () => {
   const searchResults = await imdb.getSearchResults("westworld");
-  retun searchResults;
+  return searchResults;
 }
 ```
 
