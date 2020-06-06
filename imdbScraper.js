@@ -45,11 +45,19 @@ const getImdbResults = (resultBody) => {
         return {
           title: $(e).text().trim().replace(" (TV Series)", ""),
           id: $(e).children("td").find("a").attr("href").substr(7, 9),
-          img: $(e).children("td.primary_photo").find("img").attr("src"),
+          img: getHighQualityImage(
+            $(e).children("td.primary_photo").find("img").attr("src")
+          ),
         };
       }
     })
     .get();
+};
+
+// Takes an image url and gets larger version
+// Returns higher quality image url
+const getHighQualityImage = (imgUrl) => {
+  return imgUrl.split("@.")[0] + "@._V1_UY268_CR8,0,182,268_AL_.jpg";
 };
 
 // Get all of the ratings for all seasons of a show
