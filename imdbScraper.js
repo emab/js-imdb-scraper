@@ -31,14 +31,21 @@ const getImdbSearchPage = async (showName) => {
 const getImdbResults = (resultBody) => {
   const $ = cheerio.load(resultBody);
   return $("table.findList > tbody > tr")
-    .map(function () {
-      const url = $(this).children("td").find("a").attr("href");
-      const title = $(this).text().trim();
-      if (url.includes("/title/") && title.includes(" (TV Series)")) {
+    .map((i, e) => {
+      const url = $(e).children("td").find("a").attr("href");
+      const title = $(e).text().trim();
+      if (
+        // Only return titles
+        url.includes("/title/") &&
+        // Only return tv shows
+        title.includes(" (TV Series)") &&
+        // Don't show individual episodes
+        !title.includes("(TV Episode)")
+      ) {
         return {
-          title: $(this).text().trim().replace(" (TV Series)", ""),
-          id: $(this).children("td").find("a").attr("href").substr(7, 9),
-          img: $(this).children("td.primary_photo").find("img").attr("src"),
+          title: $(e).text().trim().replace(" (TV Series)", ""),
+          id: $(e).children("td").find("a").attr("href").substr(7, 9),
+          img: $(e).children("td.primary_photo").find("img").attr("src"),
         };
       }
     })
@@ -51,14 +58,17 @@ const getAllRatings = async (imdbId) => {
   let ratings = {};
   // First we get the page using the imdbId
   const page = await fetchShowImdbPage(imdbId);
+
   const $ = cheerio.load(page);
   // The page defaults to showing latest season, so we can use this to determine total number of seasons.
   const seasons = parseInt($("#bySeason option:selected").text().trim());
+
   // Iterate through all seasons and populate ratings object
   for (i = 1; i <= seasons; i++) {
     const seasonRatings = await getSeasonRatings(imdbId, i);
     ratings[i] = seasonRatings;
   }
+
   return ratings;
 };
 
