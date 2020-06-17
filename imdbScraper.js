@@ -1,14 +1,14 @@
-const fetch = require("node-fetch");
-const cheerio = require("cheerio");
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 const HEADER = {
-  "user-agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36",
+  'user-agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36',
 };
 
 // Converts a string to a friendly query
 const convertToQueryString = (showName) => {
-  return showName.replace(" ", "+");
+  return showName.replace(' ', '+');
 };
 
 // Searches IMDB for a show name
@@ -30,23 +30,23 @@ const getImdbSearchPage = async (showName) => {
 // Returns a { title, id, img } object from html page
 const getImdbResults = (resultBody) => {
   const $ = cheerio.load(resultBody);
-  return $("table.findList > tbody > tr")
+  return $('table.findList > tbody > tr')
     .map((i, e) => {
-      const url = $(e).children("td").find("a").attr("href");
+      const url = $(e).children('td').find('a').attr('href');
       const title = $(e).text().trim();
       if (
         // Only return titles
-        url.includes("/title/") &&
+        url.includes('/title/') &&
         // Only return tv shows
-        title.includes(" (TV Series)") &&
+        title.includes(' (TV Series)') &&
         // Don't show individual episodes
-        !title.includes("(TV Episode)")
+        !title.includes('(TV Episode)')
       ) {
         return {
-          title: $(e).text().trim().replace(" (TV Series)", ""),
-          id: $(e).children("td").find("a").attr("href").substr(7, 9),
+          title: $(e).text().trim().replace(' (TV Series)', ''),
+          id: $(e).children('td').find('a').attr('href').substr(7, 9),
           img: getHighQualityImage(
-            $(e).children("td.primary_photo").find("img").attr("src")
+            $(e).children('td.primary_photo').find('img').attr('src')
           ),
         };
       }
@@ -57,7 +57,7 @@ const getImdbResults = (resultBody) => {
 // Takes an image url and gets larger version
 // Returns higher quality image url
 const getHighQualityImage = (imgUrl) => {
-  return imgUrl.split("@.")[0] + "@._V1_UY268_CR8,0,182,268_AL_.jpg";
+  return imgUrl.split('@.')[0] + '@._V1_UY268_CR8,0,182,268_AL_.jpg';
 };
 
 // Get all of the ratings for all seasons of a show
@@ -69,7 +69,7 @@ const getAllRatings = async (imdbId) => {
 
   const $ = cheerio.load(page);
   // The page defaults to showing latest season, so we can use this to determine total number of seasons.
-  const seasons = parseInt($("#bySeason option:selected").text().trim());
+  const seasons = parseInt($('#bySeason option:selected').text().trim());
 
   // Iterate through all seasons and populate ratings object
   for (i = 1; i <= seasons; i++) {
@@ -91,12 +91,12 @@ const getSeasonRatings = async (imdbId, season) => {
   const $ = cheerio.load(resultText);
 
   let seasonRatings = $(
-    "div.eplist > div > div.info > div.ipl-rating-widget > div.ipl-rating-star"
+    'div.eplist > div > div.info > div.ipl-rating-widget > div.ipl-rating-star'
   )
     .map(function (e, i) {
       return {
         episode: e + 1,
-        rating: $(this).children("span.ipl-rating-star__rating").text(),
+        rating: $(this).children('span.ipl-rating-star__rating').text(),
       };
     })
     .get();
@@ -129,4 +129,13 @@ const getSearchResults = async (show) => {
   return showDetails;
 };
 
-module.exports = { getSearchResults, getAllRatings, getSeasonRatings };
+// Gets the number of seasons of a show
+// Returns integer
+const getNumSeasons = async (imdbId) => {
+  const page = await fetch(`http://imdb.com/title/${imdbId}`);
+  const pageBody = await page.text();
+  const $ = cheerio.load(pageBody);
+  return $('div.seasons-and-year-nav > div').find('a').first().text();
+};
+
+module.exports = { getSearchResults, getAllRatings, getSeasonRatings, getNumSeasons };

@@ -8,6 +8,7 @@ Scrapes *TV Show* data from the IMDB website.
     - [Get IMDB Search Results](#get-imdb-search-results)
     - [Get a seasons ratings](#get-a-seasons-ratings)
     - [Get all seasons ratings](#get-all-seasons-ratings)
+    - [Get number of seasons](#get-number-of-seasons)
   - [License](#license)
 
 ## Getting Started
@@ -25,7 +26,7 @@ const imdb = require("js-imdb-scraper");
 
 // OR
 
-const { getSearchResults, getSeasonRatings, getAllRatings } = require("js-imdb-scraper");
+const { getSearchResults, getSeasonRatings, getAllRatings, getNumSeasons } = require("js-imdb-scraper");
 ```
 
 ## Usage
@@ -148,6 +149,27 @@ This gives us:
     { episode: 8, rating: '7.4' }
   ]
 }
+```
+
+### Get number of seasons
+
+With the IMDB ID we can find the number of show seasons by using `getNumSeasons(showId)`:
+
+```js
+const imdb = require("js-imdb-scraper");
+
+const example = async () => {
+  const searchResults = await imdb.getSearchResults("westworld");
+  const selectedShowId = searchResults[0].id;
+  const numSeasons = await imdb.getNumSeasons(selectedShowId);
+  return numSeasons;
+}
+```
+
+This gives us:
+
+```bash
+1
 ```
 
 ## License
