@@ -1,5 +1,5 @@
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+import fetch from 'node-fetch';
+import cheerio from 'cheerio';
 
 const HEADER = {
   'user-agent':
@@ -88,7 +88,7 @@ const getSeasonRatings = async (imdbId, season) => {
     `https://www.imdb.com/title/${imdbId}/episodes?season=${season}`
   );
   const resultText = await result.text();
-  const $ = cheerio.load(resultText);
+  const $ = load(resultText);
 
   let seasonRatings = $(
     'div.eplist > div > div.info > div.ipl-rating-widget > div.ipl-rating-star'
@@ -138,4 +138,4 @@ const getNumSeasons = async (imdbId) => {
   return $('div.seasons-and-year-nav > div').find('a').first().text();
 };
 
-module.exports = { getSearchResults, getAllRatings, getSeasonRatings, getNumSeasons };
+export default { getSearchResults, getAllRatings, getSeasonRatings, getNumSeasons };

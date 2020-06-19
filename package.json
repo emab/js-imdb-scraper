@@ -3,12 +3,14 @@
   "version": "0.0.6",
   "description": "",
   "main": "imdbScraper.js",
+  "type": "module",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node imdbScraper.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
