@@ -64,20 +64,24 @@ const getHighQualityImage = (imgUrl) => {
 // Returns a map of season number to an array of { episode, rating }
 const getAllRatings = async (imdbId) => {
   let ratings = {};
+
   // First we get the page using the imdbId
-  const page = await fetchShowImdbPage(imdbId);
+  try {
+    const page = await fetchShowImdbPage(imdbId);    
+    const $ = cheerio.load(page);
+    // The page defaults to showing latest season, so we can use this to determine total number of seasons.
+    const seasons = parseInt($('#bySeason option:selected').text().trim());
 
-  const $ = cheerio.load(page);
-  // The page defaults to showing latest season, so we can use this to determine total number of seasons.
-  const seasons = parseInt($('#bySeason option:selected').text().trim());
+    // Iterate through all seasons and populate ratings object
+    for (let i = 1; i <= seasons; i++) {
+      const seasonRatings = await getSeasonRatings(imdbId, i);
+      ratings[i] = seasonRatings;
+    }
 
-  // Iterate through all seasons and populate ratings object
-  for (i = 1; i <= seasons; i++) {
-    const seasonRatings = await getSeasonRatings(imdbId, i);
-    ratings[i] = seasonRatings;
+    return ratings;
+  } catch (err) {
+    console.error(err);
   }
-
-  return ratings;
 };
 
 // Gets a single seasons ratings from the IMDB page
@@ -88,7 +92,7 @@ const getSeasonRatings = async (imdbId, season) => {
     `https://www.imdb.com/title/${imdbId}/episodes?season=${season}`
   );
   const resultText = await result.text();
-  const $ = load(resultText);
+  const $ = cheerio.load(resultText);
 
   let seasonRatings = $(
     'div.eplist > div > div.info > div.ipl-rating-widget > div.ipl-rating-star'
@@ -138,4 +142,9 @@ const getNumSeasons = async (imdbId) => {
   return $('div.seasons-and-year-nav > div').find('a').first().text();
 };
 
-export default { getSearchResults, getAllRatings, getSeasonRatings, getNumSeasons };
+export default {
+  getSearchResults,
+  getAllRatings,
+  getSeasonRatings,
+  getNumSeasons,
+};
