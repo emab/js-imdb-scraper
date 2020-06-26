@@ -137,6 +137,7 @@ const fetchShowImdbPage = async (imdbId) => {
 // { title, id, img }
 const getSearchResults = async (show) => {
   const page = await getImdbSearchPage(show);
+  if (page == null) return null;
   const showDetails = getImdbResults(page);
   return showDetails;
 };
@@ -145,6 +146,7 @@ const getSearchResults = async (show) => {
 // Returns integer
 const getNumSeasons = async (imdbId) => {
   const page = await fetch(`http://imdb.com/title/${imdbId}`);
+  if (page == null) return null;
   const pageBody = await page.text();
   const $ = cheerio.load(pageBody);
   return $('div.seasons-and-year-nav > div').find('a').first().text();
