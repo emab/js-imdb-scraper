@@ -23,6 +23,7 @@ const getImdbSearchPage = async (showName) => {
     return resultBody;
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
@@ -67,7 +68,7 @@ const getAllRatings = async (imdbId) => {
 
   // First we get the page using the imdbId
   try {
-    const page = await fetchShowImdbPage(imdbId);    
+    const page = await fetchShowImdbPage(imdbId);
     const $ = cheerio.load(page);
     // The page defaults to showing latest season, so we can use this to determine total number of seasons.
     const seasons = parseInt($('#bySeason option:selected').text().trim());
@@ -81,6 +82,7 @@ const getAllRatings = async (imdbId) => {
     return ratings;
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
@@ -88,23 +90,28 @@ const getAllRatings = async (imdbId) => {
 // Returns each episode and its rating
 // { episode, rating }
 const getSeasonRatings = async (imdbId, season) => {
-  const result = await fetch(
-    `https://www.imdb.com/title/${imdbId}/episodes?season=${season}`
-  );
-  const resultText = await result.text();
-  const $ = cheerio.load(resultText);
+  try {
+    const result = await fetch(
+      `https://www.imdb.com/title/${imdbId}/episodes?season=${season}`
+    );
+    const resultText = await result.text();
+    const $ = cheerio.load(resultText);
 
-  let seasonRatings = $(
-    'div.eplist > div > div.info > div.ipl-rating-widget > div.ipl-rating-star'
-  )
-    .map(function (e, i) {
-      return {
-        episode: e + 1,
-        rating: $(this).children('span.ipl-rating-star__rating').text(),
-      };
-    })
-    .get();
-  return seasonRatings;
+    let seasonRatings = $(
+      'div.eplist > div > div.info > div.ipl-rating-widget > div.ipl-rating-star'
+    )
+      .map(function (e, i) {
+        return {
+          episode: e + 1,
+          rating: $(this).children('span.ipl-rating-star__rating').text(),
+        };
+      })
+      .get();
+    return seasonRatings;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 };
 
 // Gets the IMDB show episodes page
@@ -120,7 +127,8 @@ const fetchShowImdbPage = async (imdbId) => {
     const resultBody = await result.text();
     return resultBody;
   } catch (err) {
-    console.error(error);
+    console.error(err);
+    return null;
   }
 };
 
