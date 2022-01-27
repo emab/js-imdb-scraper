@@ -81,18 +81,21 @@ const example = async () => {
 This gives us:
 
 ```js
-[
-  { episode: 1, rating: '8.9' },
-  { episode: 2, rating: '8.6' },
-  { episode: 3, rating: '8.4' },
-  { episode: 4, rating: '8.7' },
-  { episode: 5, rating: '8.7' },
-  { episode: 6, rating: '8.9' },
-  { episode: 7, rating: '9.5' },
-  { episode: 8, rating: '8.8' },
-  { episode: 9, rating: '9.4' },
-  { episode: 10, rating: '9.7' }
-]
+{
+    season: 1,
+    ratings: [
+      { episode: 1, rating: '8.9' },
+      { episode: 2, rating: '8.6' },
+      { episode: 3, rating: '8.4' },
+      { episode: 4, rating: '8.7' },
+      { episode: 5, rating: '8.7' },
+      { episode: 6, rating: '8.9' },
+      { episode: 7, rating: '9.5' },
+      { episode: 8, rating: '8.8' },
+      { episode: 9, rating: '9.4' },
+      { episode: 10, rating: '9.7' }
+    ],
+}
 ```
 
 ### Get all seasons ratings
