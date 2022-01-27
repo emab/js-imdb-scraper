@@ -159,5 +159,3 @@ export default {
     getSeasonRatings,
     getNumSeasons,
 };
-
-getAllRatings("tt0460649").then(console.log);
