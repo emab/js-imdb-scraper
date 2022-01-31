@@ -68,7 +68,7 @@ const getAllRatings = async (imdbId) => {
         const page = await fetchShowImdbPage(imdbId);
         const $ = cheerio.load(page);
         // The page defaults to showing latest season, so we can use this to determine total number of seasons.
-        const lastSeasonNumber = parseInt($('#bySeason option').length + 1);
+        const lastSeasonNumber = parseInt($('#bySeason option').length);
 
         // an array with all numbers from one to thirty
         const seasons = Array.from(Array(lastSeasonNumber).keys()).slice(1);
@@ -146,12 +146,11 @@ const getSearchResults = async (show) => {
 // Gets the number of seasons of a show
 // Returns integer
 const getNumSeasons = async (imdbId) => {
-  const page = await fetch(`http://imdb.com/title/${imdbId}`);
-  if (page == null) return null;
-  const pageBody = await page.text();
-  const $ = cheerio.load(pageBody);
-  return $('div.seasons-and-year-nav > div').find('a').first().text();
-};
+    const page = await fetchShowImdbPage(imdbId);
+    const $ = cheerio.load(page);
+    // The page defaults to showing latest season, so we can use this to determine total number of seasons.
+    return parseInt($('#bySeason option').length);
+}
 
 export default {
     getSearchResults,
