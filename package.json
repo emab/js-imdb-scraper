@@ -1,6 +1,6 @@
 {
   "name": "js-imdb-scraper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple IMDB scraper",
   "main": "imdbScraper.js",
   "type": "module",
